@@ -8,7 +8,10 @@ import java.awt.event.ActionListener;
 
 public class ChatUI extends JFrame {
 	public static void main(String argc[]){
-		ChatUI c=new ChatUI();
+		//ChatUI c=new ChatUI();
+		ChatConnection cc=new ChatConnection("192.168.0.101");
+		cc.sendMessage("hello");
+		Receive r=new Receive(cc);
 	}
 	
 	public static InetAddress host;
