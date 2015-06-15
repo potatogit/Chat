@@ -1,8 +1,8 @@
 import java.util.*;
 import java.net.*;
-public class ChatConnection extends Thread{
+public class ChatConnection{
 	public DatagramSocket dsc=null;
-	public int port =10010;
+	public int port =10011;
 	public DatagramPacket sendDp=null;
 	public DatagramPacket receiveDp=null;
 	InetAddress addr=null;
@@ -11,17 +11,11 @@ public class ChatConnection extends Thread{
 		try{
 			dsc=new DatagramSocket(port);
 			addr=InetAddress.getByName(ipAddr);
-			System.out.println(addr);
+			//System.out.println(addr);
 		}catch(Exception e1){
 			e1.printStackTrace();
 		}
 		
-	}
-	public void displayReceivedMessage(){
-		while(true){
-			String text=receiveMessage();
-			ChatUI.textArea.append(addr+" 说:\r\n" + text + "\r\n");
-		}
 	}
 	public void chatConnectionClose(){
 		try{
@@ -41,4 +35,3 @@ public class ChatConnection extends Thread{
 	}
 
 }
-
