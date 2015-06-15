@@ -16,6 +16,7 @@ public class ChatUI extends JFrame {
 	private static String name;
 	public static JTextArea textArea;
 	ChatConnection chatConnection=null;
+	Receive receive=null;
 	private boolean isFree=true;
 	public ChatUI(){
 		setMenu();
@@ -100,9 +101,12 @@ public class ChatUI extends JFrame {
 		btnNewButton1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				if(isFree&&textField.getText()!=null){
-					String ipAddr=textArea_1.getText();
+					String ipAddr=textField.getText();
 					try{
 						 chatConnection=new ChatConnection(ipAddr);
+						// chatConnection.displayReceivedMessage();
+						 receive=new Receive(chatConnection);
+						 //System.out.println(ipAddr);
 						 isFree=false;
 						 JOptionPane.showMessageDialog(getContentPane(), "Connection Succeeded");
 					}catch(Exception ee){
