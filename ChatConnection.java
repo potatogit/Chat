@@ -1,17 +1,17 @@
 import java.util.*;
 import java.net.*;
 public class ChatConnection extends Thread{
-	private DatagramSocket dsc=null;
-	private int port =10010;
-	private DatagramPacket sendDp=null;
-	private DatagramPacket receiveDp=null;
+	public DatagramSocket dsc=null;
+	public int port =10010;
+	public DatagramPacket sendDp=null;
+	public DatagramPacket receiveDp=null;
 	InetAddress addr=null;
 
 	public ChatConnection(String ipAddr){
 		try{
 			dsc=new DatagramSocket(port);
 			addr=InetAddress.getByName(ipAddr);
-			//System.out.println("Set up Successfully;");
+			System.out.println(addr);
 		}catch(Exception e1){
 			e1.printStackTrace();
 		}
@@ -30,24 +30,15 @@ public class ChatConnection extends Thread{
 	}
 	public void sendMessage(String str){
 		byte b[]=str.getBytes();
-		//System.out.println(Arrays.toString(b));
+		//System.out.println(addr+"  "+Arrays.toString(b));
 		try{
 			sendDp=new DatagramPacket(b,b.length,addr,port);
 			dsc.send(sendDp);
-			System.out.println(Arrays.toString(b));
-		}catch(Exception e){}
-	}
-	public String receiveMessage(){
-		byte b[]=new byte[100000];
-		try{
-			receiveDp=new DatagramPacket(b,b.length);
-			dsc.receive(receiveDp);
-			byte bb[]=receiveDp.getData();
-			int len=receiveDp.getLength();
-			String str=new String(bb,0,len);
-			return str;
-		}catch(Exception e){}
-		return null;
+			//System.out.println(Arrays.toString(b));
+		}catch(Exception e){
+			System.out.println("Send Error");
+		}
 	}
 
 }
+
