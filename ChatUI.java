@@ -120,7 +120,7 @@ public class ChatUI extends JFrame {
 		});
 		
 		// disconnect按钮
-		btnNewButton2.addActionListener(new ActionListener(){
+		btnNewButton2.addActionListener(new ActionListener(){//
 			public void actionPerformed(ActionEvent e) {
 					try{
 						chatConnection.chatConnectionClose();
