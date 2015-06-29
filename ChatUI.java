@@ -9,9 +9,6 @@ import java.awt.event.ActionListener;
 public class ChatUI extends JFrame {
 	public static void main(String argc[]){
 		ChatUI c=new ChatUI();
-		//ChatConnection cc=new ChatConnection("192.168.0.102");
-		//cc.sendMessage("hello");
-		//Receive r=new Receive(cc);
 	}
 	
 	public static InetAddress host;
@@ -25,7 +22,6 @@ public class ChatUI extends JFrame {
 		setMenu();
 	}	
 	private void setMenu(){
-		//SwingUtilities.updateComponentTreeUI(this);
 		try {
 			host=InetAddress.getLocalHost();
 		}catch(Exception e){}
@@ -35,10 +31,7 @@ public class ChatUI extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//关闭按钮的设定
 		setBounds(200,100,450,450);//x轴y轴的距离，长宽
 		contentPane = new JPanel() ;
-		//{
-//			//private static final long serialVersionUID = 1L;
-//
-//		};
+
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
@@ -89,7 +82,7 @@ public class ChatUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String info = textArea_1.getText();
 				// 自己发的内容也要现实在自己的屏幕上面
-				textArea.append(" 我说:\r\n" + info + "\r\n");
+				textArea.append(" local user says:\r\n" + info + "\r\n");
 				try{
 					chatConnection.sendMessage(info);
 				}catch(Exception eee){
@@ -107,9 +100,7 @@ public class ChatUI extends JFrame {
 					String ipAddr=textField.getText();
 					try{
 						 chatConnection=new ChatConnection(ipAddr);
-						// chatConnection.displayReceivedMessage();
 						 receive=new Receive(chatConnection);
-						 //System.out.println(ipAddr);
 						 isFree=false;
 						 JOptionPane.showMessageDialog(getContentPane(), "Connection Succeeded");
 					}catch(Exception ee){

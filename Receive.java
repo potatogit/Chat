@@ -4,9 +4,9 @@ public class Receive extends Thread{
 	ChatConnection cc=null;
 	public Receive(ChatConnection cc){
 		this.cc=cc;
-		start();//
+		start(); // Start thread
 	}
-	public void run(){//
+	public void run(){  // run thread
 		byte b[]=new byte[100000];
 		try{
 			while(true && cc!=null){
@@ -15,8 +15,7 @@ public class Receive extends Thread{
 			    byte bb[]=cc.receiveDp.getData();
 			    int len=cc.receiveDp.getLength();
 			    String str=new String(bb,0,len);
-			    ChatUI.textArea.append(cc.addr+"Ëµ£º\r\n"+str+"\r\n");
-			    //System.out.println(str);
+			    ChatUI.textArea.append(cc.addr+" says£º\r\n"+str+"\r\n");
 			}
 			
 		}catch(Exception e){}
