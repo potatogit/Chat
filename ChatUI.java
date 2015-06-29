@@ -1,50 +1,134 @@
+import java.util.*;
+import javax.swing.*;
 import java.net.*;
-    import java.util.*;
-    /**
-     * 简单的UDP客户端，实现向服务器端发生系统时间功能
-     * 该程序发送3次数据到服务器端
-     */
-    public class ChatUI {
-             public static void main(String[] args) {
-             DatagramSocket ds = null; //连接对象
-             DatagramPacket sendDp; //发送数据包对象
-             DatagramPacket receiveDp; //接收数据包对象
-             String serverHost = "127.0.0.1"; //服务器IP
-             int serverPort = 10012; //服务器端口号
-             try{
-                    //建立连接
-                    ds = new DatagramSocket();
-                    //初始
-                    InetAddress address = InetAddress.getByName(serverHost);
-                    byte[] b = new byte[1024];
-                    receiveDp = new DatagramPacket(b,b.length);
-                    System.out.println("客户端准备完成");
-                    //循环30次，每次间隔0.01秒
-                    for(int i = 0;i < 30;i++){
-                    	//初始化发送数据
-                        Date d = new Date(); //当前时间
-                        String content = d.toString(); //转换为字符串
-                        byte[] data = content.getBytes();
-                        //初始化发送包对象
-                        sendDp = new DatagramPacket(data,data.length,address, serverPort);
-                        //发送
-                        ds.send(sendDp);
-                        //延迟
-                        Thread.sleep(10);
-                        //接收
-                        ds.receive(receiveDp);
-                        //读取反馈内容，并输出
-                        byte[] response = receiveDp.getData();
-                        int len = receiveDp.getLength();
-                        String s = new String(response,0,len);
-                        System.out.println("服务器端反馈为：" + s);
-                   }
-       }catch(Exception e){e.printStackTrace();}
-      finally{
-    	  try{
-    		  //关闭连接
-    		  ds.close();}
-    	  catch(Exception e){}
-    	  }
-      }
- }
+import java.io.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class ChatUI extends JFrame {
+	public static void main(String argc[]){
+		ChatUI c=new ChatUI();
+		//ChatConnection cc=new ChatConnection("192.168.0.102");
+		//cc.sendMessage("hello");
+		//Receive r=new Receive(cc);
+	}
+	
+	public static InetAddress host;
+	private static JPanel contentPane;
+	private static String name;
+	public static JTextArea textArea;
+	ChatConnection chatConnection=null;
+	Receive receive=null;
+	private boolean isFree=true;
+	public ChatUI(){
+		setMenu();
+	}	
+	private void setMenu(){
+		//SwingUtilities.updateComponentTreeUI(this);
+		try {
+			host=InetAddress.getLocalHost();
+		}catch(Exception e){}
+		name="Chat       host IP: "+host.getHostAddress();
+		setTitle(name);
+		setResizable(false);//改变大小
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//关闭按钮的设定
+		setBounds(200,100,450,450);//x轴y轴的距离，长宽
+		contentPane = new JPanel() ;
+		//{
+//			//private static final long serialVersionUID = 1L;
+//
+//		};
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		//IP address field
+		final JTextField textField=new JTextField();
+		textField.setBounds(20,10,200,30);
+		getContentPane().add(textField);
+
+		// 聊天信息显示区域
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(25, 50, 400, 250);
+		getContentPane().add(scrollPane);
+
+		textArea = new JTextArea();
+		textArea.setEditable(false);
+		textArea.setLineWrap(true);//激活自动换行功能 
+		textArea.setWrapStyleWord(true);//激活断行不断字功能 
+		textArea.setFont(new Font("sdf", Font.BOLD, 13));
+		scrollPane.setViewportView(textArea);
+
+		// 打字区域
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(25, 320, 400, 70);
+		getContentPane().add(scrollPane_1);
+
+		final JTextArea textArea_1 = new JTextArea();
+		textArea_1.setLineWrap(true);//激活自动换行功能 
+		textArea_1.setWrapStyleWord(true);//激活断行不断字功能 
+		scrollPane_1.setViewportView(textArea_1);
+
+		
+		JButton btnNewButton = new JButton("Send");
+		btnNewButton.setBounds(350,390,50,36);	
+		//getRootPane().setDefaultButton(btnNewButton);
+		getContentPane().add(btnNewButton);
+		
+		JButton btnNewButton1 = new JButton("Connect");
+		btnNewButton1.setBounds(235,10,80,30);
+		getContentPane().add(btnNewButton1);
+		
+		JButton btnNewButton2 = new JButton("Disconnect");
+		btnNewButton2.setBounds(320,10,100,30);
+		getContentPane().add(btnNewButton2);
+		
+		this.setVisible(true);
+		// send按钮
+		btnNewButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String info = textArea_1.getText();
+				// 自己发的内容也要现实在自己的屏幕上面
+				textArea.append(" 我说:\r\n" + info + "\r\n");
+				try{
+					chatConnection.sendMessage(info);
+				}catch(Exception eee){
+					JOptionPane.showMessageDialog(getContentPane(), "Sending message Failed");
+				}
+				textArea_1.setText(null);
+				textArea_1.requestFocus();
+			}
+		});
+		
+		// connect按钮
+		btnNewButton1.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				if(isFree&&textField.getText()!=null){
+					String ipAddr=textField.getText();
+					try{
+						 chatConnection=new ChatConnection(ipAddr);
+						// chatConnection.displayReceivedMessage();
+						 receive=new Receive(chatConnection);
+						 //System.out.println(ipAddr);
+						 isFree=false;
+						 JOptionPane.showMessageDialog(getContentPane(), "Connection Succeeded");
+					}catch(Exception ee){
+						JOptionPane.showMessageDialog(getContentPane(), "Connection Failed");
+					}
+				}
+			}
+		});
+		
+		// disconnect按钮
+		btnNewButton2.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+					try{
+						chatConnection.chatConnectionClose();
+						isFree=true;
+						JOptionPane.showMessageDialog(getContentPane(), "Disconnect successfully");
+					}catch(Exception ee){}
+			}
+		});
+		
+	}
+}

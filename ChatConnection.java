@@ -24,7 +24,6 @@ public class ChatConnection{
 	}
 	public void sendMessage(String str){
 		byte b[]=str.getBytes();
-		//System.out.println(addr+"  "+Arrays.toString(b));
 		try{
 			sendDp=new DatagramPacket(b,b.length,addr,port);
 			dsc.send(sendDp);
@@ -35,3 +34,4 @@ public class ChatConnection{
 	}
 
 }
+
